@@ -1,4 +1,10 @@
-import express, { Request, Response, NextFunction, Application } from "express";
+import express, {
+  Request,
+  Response,
+  NextFunction,
+  Application,
+  ErrorRequestHandler,
+} from "express";
 import createError from "http-errors";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -21,16 +27,15 @@ app.use((_req: Request, _res: Response, next: NextFunction) => {
   next(createError(404, "Router not found!"));
 });
 
-interface AppError extends Error {
-  status?: number;
-}
-
-app.use((err: AppError, _req: Request, res: Response, _next: NextFunction) => {
+// Define the error handler explicitly
+const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   return errorResponse(res, {
     statusCode: err.status || 500,
     message: err.message || "Internal server error!",
   });
-});
+};
+
+app.use(errorHandler);
 
 app.listen(5000, () => {
   console.log(`server is running at http://localhost:5000`);
