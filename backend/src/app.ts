@@ -27,15 +27,24 @@ app.use((_req: Request, _res: Response, next: NextFunction) => {
   next(createError(404, "Router not found!"));
 });
 
-// Define the error handler explicitly
-const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
+interface AppError
+
+app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
   return errorResponse(res, {
     statusCode: err.status || 500,
     message: err.message || "Internal server error!",
   });
-};
+});
 
-app.use(errorHandler);
+// Define the error handler explicitly
+// const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
+//   return errorResponse(res, {
+//     statusCode: err.status || 500,
+//     message: err.message || "Internal server error!",
+//   });
+// };
+
+// app.use(errorHandler);
 
 app.listen(5000, () => {
   console.log(`server is running at http://localhost:5000`);
