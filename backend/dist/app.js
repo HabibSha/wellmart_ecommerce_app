@@ -19,15 +19,18 @@ const cors_1 = __importDefault(require("cors"));
 const responseController_1 = require("./controllers/responseController");
 const secret_1 = require("./secret");
 const database_1 = __importDefault(require("./config/database"));
+const userRouter_1 = __importDefault(require("./routers/userRouter"));
 const app = (0, express_1.default)();
 dotenv_1.default.config();
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, cors_1.default)());
+//todo: Routers
+app.use("/api/users", userRouter_1.default);
 app.get("/", (_req, res, _next) => {
     res.status(200).json({ message: "hello" });
 });
-// Not found error-handling middleware
+//todo: Not found error-handling middleware
 app.use((_req, _res, next) => {
     next((0, http_errors_1.default)(404, "Router not found!"));
 });
@@ -37,6 +40,7 @@ app.use((err, _req, res, _next) => {
         message: err.message || "Internal server error!",
     });
 });
+// todo: Server
 app.listen(secret_1.port, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`server is running at http://localhost:${secret_1.port}`);
     yield (0, database_1.default)();
