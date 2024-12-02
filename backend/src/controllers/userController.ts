@@ -4,7 +4,7 @@ import createError from "http-errors";
 import User from "../models/userModel";
 import { successResponse } from "./responseController";
 
-export const handleUserRegister = async (
+const handleUserRegister = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -25,7 +25,7 @@ export const handleUserRegister = async (
 
     successResponse(res, {
       statusCode: 201,
-      message: "User was registered successfully",
+      message: "Your account has been successfully created",
       payload: user,
     });
   } catch (error) {
@@ -33,4 +33,22 @@ export const handleUserRegister = async (
   }
 };
 
-export default { handleUserRegister };
+const handleGetAllUsers = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const users = await User.find();
+
+    successResponse(res, {
+      statusCode: 200,
+      message: "User returned successfully",
+      payload: users,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { handleUserRegister, handleGetAllUsers };
