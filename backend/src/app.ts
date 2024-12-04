@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction, Application } from "express";
 import createError from "http-errors";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import { errorResponse } from "./controllers/responseController";
 import { port } from "./secret";
@@ -14,7 +15,8 @@ dotenv.config();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({ credentials: true }));
+app.use(cookieParser());
 
 //todo: Routers
 app.use("/api/users", userRouter);
