@@ -4,6 +4,7 @@ import createError from "http-errors";
 import User from "../models/userModel";
 import { successResponse } from "./responseController";
 
+// Create a new user - Process register
 const handleUserRegister = async (
   req: Request,
   res: Response,
@@ -33,6 +34,7 @@ const handleUserRegister = async (
   }
 };
 
+// Get all the users by admin
 const handleGetAllUsers = async (
   _req: Request,
   res: Response,
