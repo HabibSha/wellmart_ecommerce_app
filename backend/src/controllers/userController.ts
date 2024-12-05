@@ -26,7 +26,7 @@ const handleUserRegister = async (
     successResponse(res, {
       statusCode: 201,
       message: "Your account has been successfully created",
-      payload: user,
+      payload: [user],
     });
   } catch (error) {
     next(error);
