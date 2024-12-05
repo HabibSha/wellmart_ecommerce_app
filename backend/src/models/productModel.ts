@@ -50,10 +50,15 @@ const productSchema = new mongoose.Schema(
       trim: true,
       default: 0,
     },
-    image: [{ type: String }],
+    image: [{ type: String, required: [true, "Product image is required"] }],
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
+      required: true,
+    },
+    brand: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Brand",
       required: true,
     },
     is_active: {
