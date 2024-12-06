@@ -11,6 +11,7 @@ const handleUserRegister = async (
   next: NextFunction
 ): Promise<void> => {
   const { name, email, password } = req.body;
+  const image = req.file?.path;
 
   try {
     const existingUser = await User.findOne({ email });
@@ -21,7 +22,7 @@ const handleUserRegister = async (
       );
     }
 
-    const newUser = { name, email, password };
+    const newUser = { name, email, password, image };
     const user = await User.create(newUser);
 
     successResponse(res, {

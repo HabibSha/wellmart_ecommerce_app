@@ -33,6 +33,7 @@ const userSchema = new mongoose.Schema(
       minLength: [6, "Password must be at least minimum 6 characters"],
       set: (v: string) => bcrypt.hashSync(v, bcrypt.genSaltSync(10)),
     },
+    image: { type: String },
     isAdmin: {
       type: Boolean,
       default: false,
