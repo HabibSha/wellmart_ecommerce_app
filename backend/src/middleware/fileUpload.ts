@@ -2,17 +2,15 @@ import multer from "multer";
 import path from "path";
 import createError from "http-errors";
 
-const UPLOAD_DIR = process.env.UPLOAD_FILE || "public/images/users";
-const MAX_FILE_SIZE = Number(process.env.MAX_FILE_SIZE) || 2097152; // bytes = 2 mb = 1024*1024*2
-const ALLOWED_FILE_TYPES = process.env.ALLOWED_FILE_TYPES || [
-  "jpg",
-  "jpeg",
-  "png",
-];
+import {
+  UPLOAD_USER_FILE_DIRECTORY,
+  MAX_FILE_SIZE,
+  ALLOWED_FILE_TYPES,
+} from "../config";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, UPLOAD_DIR); // Temporary directory
+    cb(null, UPLOAD_USER_FILE_DIRECTORY); // Temporary directory
   },
   filename: (req, file, cb) => {
     const extname = path.extname(file.originalname);
@@ -26,11 +24,11 @@ const storage = multer.diskStorage({
 const fileFilter = (
   _req: any,
   file: { originalname: string },
-  cb: (arg0: any, arg1?: boolean | undefined) => void
+  cb: (arg0: any, arg1: undefined | boolean) => void
 ) => {
   const extname = path.extname(file.originalname);
   if (!ALLOWED_FILE_TYPES.includes(extname.substring(1))) {
-    return cb(createError(400, "File type not allowed"));
+    return cb(new Error("File type not allowed"), false);
   }
   cb(null, true);
 };
