@@ -11,6 +11,10 @@ const handleUserRegister = async (
   next: NextFunction
 ): Promise<void> => {
   const { name, email, password } = req.body;
+
+  if (!req.file) {
+    throw createError(400, "No file uploaded");
+  }
   const image = req.file?.path;
 
   try {
