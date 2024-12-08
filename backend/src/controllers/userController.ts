@@ -12,10 +12,14 @@ const handleUserRegister = async (
 ): Promise<void> => {
   const { name, email, password } = req.body;
 
-  if (!req.file) {
+  const file = req.file;
+
+  if (!file) {
     throw createError(400, "No file uploaded");
   }
-  const image = req.file?.path;
+  if (file.size > 1024 * 1024 * 2) {
+    throw createError(400, "File too large. It must be less than 2 MB");
+  }
 
   try {
     const existingUser = await User.findOne({ email });
@@ -26,7 +30,7 @@ const handleUserRegister = async (
       );
     }
 
-    const newUser = { name, email, password, image };
+    const newUser = { name, email, password, image: file.path };
     const user = await User.create(newUser);
 
     successResponse(res, {

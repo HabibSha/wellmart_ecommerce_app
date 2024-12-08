@@ -5,11 +5,15 @@ import {
   handleGetAllUsers,
 } from "../controllers/userController";
 import { handleUserLogin } from "../controllers/authController";
-import upload from "../middleware/fileUpload";
+import uploadUserImage from "../middleware/fileUpload";
 
 const userRouter = Router();
 
-userRouter.post("/register", upload.single("image"), handleUserRegister);
+userRouter.post(
+  "/register",
+  uploadUserImage.single("image"),
+  handleUserRegister
+);
 userRouter.post("/login", handleUserLogin);
 userRouter.post("/users", handleGetAllUsers);
 
