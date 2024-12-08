@@ -1,9 +1,16 @@
 import { v2 as cloudinary } from "cloudinary";
 
-cloudinary.uploader.upload(
-  "/home/my_image.jpg",
-  { upload_preset: "my_preset" },
-  (error, result) => {
-    console.log(result, error);
+const uploadToCloudinary = async (imageFile: string): Promise<any> => {
+  try {
+    const result = await cloudinary.uploader.upload(imageFile, {
+      resource_type: "image",
+      visibility: "public",
+      // folder: "your-folder",
+    });
+    return result;
+  } catch (error) {
+    throw new Error(`Upload failed: ${error}`);
   }
-);
+};
+
+export default uploadToCloudinary;

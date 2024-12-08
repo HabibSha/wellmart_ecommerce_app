@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import createError from "http-errors";
+import fs from "fs";
 
 import User from "../models/userModel";
 import { successResponse } from "./responseController";
+import uploadToCloudinary from "../helper/uploadToCloudinary";
 
 // Create a new user - Process register
 const handleUserRegister = async (
@@ -30,7 +32,18 @@ const handleUserRegister = async (
       );
     }
 
-    const newUser = { name, email, password, image: file.path };
+    const image = file?.path;
+    const result = await uploadToCloudinary(image);
+    if (!result || !result.secure_url) {
+      throw new Error("Failed to upload image to Cloudinary");
+    }
+    const imageUrl = result.secure_url;
+    console.log(imageUrl);
+
+    // Optionally delete the file from the local server
+    fs.unlinkSync(image);
+
+    const newUser = { name, email, password, image: imageUrl };
     const user = await User.create(newUser);
 
     successResponse(res, {
