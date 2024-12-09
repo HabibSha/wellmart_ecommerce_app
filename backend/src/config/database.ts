@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import { mongoUri } from "../secret";
+import { mongodbUri } from "../secret";
 
 const connectDatabase = async (options = {}): Promise<void> => {
   try {
-    await mongoose.connect(mongoUri, options);
+    await mongoose.connect(mongodbUri, options);
     console.log("Database connected successfully");
 
     // Attach event listeners to mongoose.connection

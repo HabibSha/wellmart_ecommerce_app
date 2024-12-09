@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
+import { defaultImagePath } from "../secret";
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -33,7 +35,7 @@ const userSchema = new mongoose.Schema(
       minLength: [6, "Password must be at least minimum 6 characters"],
       set: (v: string) => bcrypt.hashSync(v, bcrypt.genSaltSync(10)),
     },
-    image: { type: String },
+    image: { type: String, default: defaultImagePath },
     isAdmin: {
       type: Boolean,
       default: false,
