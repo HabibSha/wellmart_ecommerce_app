@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction, Application } from "express";
-import createError from "http-errors";
 import dotenv from "dotenv";
+dotenv.config();
+import createError from "http-errors";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -10,8 +11,6 @@ import connectDatabase from "./config/database";
 import userRouter from "./routers/userRouter";
 
 const app: Application = express();
-
-dotenv.config();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

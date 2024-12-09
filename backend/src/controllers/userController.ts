@@ -14,15 +14,6 @@ const handleUserRegister = async (
 ): Promise<void> => {
   const { name, email, password } = req.body;
 
-  const file = req.file;
-
-  if (!file) {
-    throw createError(400, "No file uploaded");
-  }
-  if (file.size > 1024 * 1024 * 2) {
-    throw createError(400, "File too large. It must be less than 2 MB");
-  }
-
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -32,13 +23,21 @@ const handleUserRegister = async (
       );
     }
 
+    const file = req.file;
+
+    if (!file) {
+      throw createError(400, "No file uploaded");
+    }
+    if (file.size > 1024 * 1024 * 2) {
+      throw createError(400, "File too large. It must be less than 2 MB");
+    }
+
     const image = file?.path;
     const result = await uploadToCloudinary(image);
     if (!result || !result.secure_url) {
       throw new Error("Failed to upload image to Cloudinary");
     }
     const imageUrl = result.secure_url;
-    console.log(imageUrl);
 
     // Optionally delete the file from the local server
     fs.unlinkSync(image);

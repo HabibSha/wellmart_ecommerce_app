@@ -1,4 +1,4 @@
-const port = process.env.PORT || 5002;
+const port = process.env.PORT || 5001;
 const mongoUri =
   process.env.MongoDB_URI || "mongodb://127.0.0.1:27017/WellMartDB";
 
