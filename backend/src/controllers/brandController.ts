@@ -5,7 +5,8 @@ import createError from "http-errors";
 import Brand from "../models/brandModel";
 import { successResponse } from "./responseController";
 
-const handleBrandCreate = async (
+// Create a brand
+const handleCreateBrand = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -33,3 +34,5 @@ const handleBrandCreate = async (
     next(error);
   }
 };
+
+export { handleCreateBrand };
