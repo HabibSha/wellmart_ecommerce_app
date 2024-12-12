@@ -5,7 +5,7 @@ import {
   handleGetAllUsers,
 } from "../controllers/userController";
 import { handleUserLogin } from "../controllers/authController";
-import uploadUserImage from "../middleware/fileUpload";
+import { uploadUserImage } from "../middleware/fileUpload";
 import {
   validateUserRegistration,
   validateUserLogin,

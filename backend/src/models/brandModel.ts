@@ -5,6 +5,7 @@ const brandSchema = new mongoose.Schema(
     title: {
       type: String,
       required: [true, "Brand title is required"],
+      trim: true,
       unique: true,
       minLength: [2, "Brand title should be at least minimum 2 characters"],
       maxLength: [150, "Brand title can not be maximum 150 characters long"],

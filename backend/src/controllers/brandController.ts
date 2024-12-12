@@ -11,16 +11,16 @@ const handleCreateBrand = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const { name } = req.body;
+  const { title } = req.body;
   try {
-    const existingBrand = await Brand.exists({ name });
+    const existingBrand = await Brand.exists({ title });
     if (existingBrand) {
-      throw createError(400, "Brand name is already exists");
+      throw createError(400, "Brand title is already exists");
     }
 
     const newBrand = {
-      name: name,
-      slug: slugify(name),
+      title: title,
+      slug: slugify(title, { lower: true }),
     };
 
     const brand = await Brand.create(newBrand);

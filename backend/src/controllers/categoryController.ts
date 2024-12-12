@@ -15,12 +15,12 @@ const handleCreateCategory = async (
   try {
     const existingCategory = await Category.exists({ title });
     if (existingCategory) {
-      throw createError(400, "Category is already exists");
+      throw createError(400, "Category already exists");
     }
 
     const newCategory = {
       title: title,
-      slug: slugify(title),
+      slug: slugify(title, { lower: true }),
     };
 
     const category = await Category.create(newCategory);
