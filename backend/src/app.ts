@@ -11,6 +11,7 @@ import connectDatabase from "./config/database";
 import userRouter from "./routers/userRouter";
 import productRouter from "./routers/productRouter";
 import categoryRouter from "./routers/categoryRouter";
+import brandRouter from "./routers/brandRouter";
 
 const app: Application = express();
 
@@ -23,6 +24,7 @@ app.use(cookieParser());
 app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
+app.use("/api/brands", brandRouter);
 
 app.get("/", (_req: Request, res: Response, _next: NextFunction) => {
   res.status(200).json({ message: "hello" });

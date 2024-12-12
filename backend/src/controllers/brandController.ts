@@ -13,7 +13,7 @@ const handleCreateBrand = async (
 ): Promise<void> => {
   const { name } = req.body;
   try {
-    const existingBrand = await Brand.findOne();
+    const existingBrand = await Brand.exists({ name });
     if (existingBrand) {
       throw createError(400, "Brand name is already exists");
     }
