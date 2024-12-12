@@ -9,6 +9,7 @@ import { errorResponse } from "./controllers/responseController";
 import { port } from "./secret";
 import connectDatabase from "./config/database";
 import userRouter from "./routers/userRouter";
+import productRouter from "./routers/productRouter";
 
 const app: Application = express();
 
@@ -19,6 +20,7 @@ app.use(cookieParser());
 
 //todo: Routers
 app.use("/api/users", userRouter);
+app.use("/api/products", productRouter);
 
 app.get("/", (_req: Request, res: Response, _next: NextFunction) => {
   res.status(200).json({ message: "hello" });

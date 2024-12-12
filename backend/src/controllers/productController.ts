@@ -15,6 +15,7 @@ const handleCreateProduct = async (
 ): Promise<void> => {
   const { title, description, price, quantity, sold, category, brand } =
     req.body;
+
   try {
     const image = req.file;
     if (!image) {
