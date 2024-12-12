@@ -13,7 +13,7 @@ const handleCreateCategory = async (
 ): Promise<void> => {
   const { title } = req.body;
   try {
-    const existingCategory = await Category.findOne();
+    const existingCategory = await Category.exists({ title });
     if (existingCategory) {
       throw createError(400, "Category is already exists");
     }
