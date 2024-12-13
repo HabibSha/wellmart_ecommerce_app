@@ -46,7 +46,6 @@ const productSchema = new mongoose.Schema(
     },
     sold: {
       type: Number,
-      required: [true, "Product sold is required."],
       trim: true,
       default: 0,
     },
