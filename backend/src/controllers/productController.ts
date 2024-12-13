@@ -72,10 +72,10 @@ const handleCreateProduct = async (
       description,
       price,
       quantity,
-      sold,
+      sold: sold || 0,
       image: imageUrl,
-      category,
-      brand,
+      category: categoryId,
+      brand: brandId,
     });
 
     // Update the category's products array
