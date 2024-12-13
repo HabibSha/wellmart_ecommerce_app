@@ -23,7 +23,7 @@ const handleCreateProduct = async (
     // Find Category by Name if category is not an ObjectId
     let categoryId = category;
     if (!mongoose.isValidObjectId(category)) {
-      const categoryDoc = await Category.findOne({ category });
+      const categoryDoc = await Category.findOne({ title: category });
       if (!categoryDoc) {
         throw createError(404, `Category '${category}' not found!`);
       }
@@ -33,15 +33,11 @@ const handleCreateProduct = async (
     // Find Brand by Name if brand is not an ObjectId
     let brandId = brand;
     if (!mongoose.isValidObjectId(brand)) {
-      const brandDoc = await Brand.findOne({ brand });
+      const brandDoc = await Brand.findOne({ title: brand });
       if (!brandDoc) {
         throw createError(404, `Brand '${brand}' not found!`);
       }
       brandId = brandDoc._id;
-    }
-
-    if (!mongoose.isValidObjectId(brand)) {
-      throw createError(400, "Invalid brand ID");
     }
 
     // handle upload image

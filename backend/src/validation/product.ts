@@ -27,7 +27,7 @@ const validateProduct = [
     .withMessage("Product quantity is required")
     .isInt({ min: 1 })
     .withMessage("Product quantity must be a positive integer"),
-  body("image").notEmpty().withMessage("Product image is required"),
+  // body("image").notEmpty().withMessage("Product image is required"),
   body("category").trim().notEmpty().withMessage("Category is required"),
   body("brand").trim().notEmpty().withMessage("Brand is required"),
 ];
