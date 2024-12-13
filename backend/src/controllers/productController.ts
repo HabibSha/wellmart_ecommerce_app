@@ -20,25 +20,31 @@ const handleCreateProduct = async (
     req.body;
 
   try {
-    // Check if category and brand are valid ObjectId
+    // Find Category by Name if category is not an ObjectId
+    let categoryId = category;
     if (!mongoose.isValidObjectId(category)) {
-      throw createError(400, "Invalid category ID");
+      const categoryDoc = await Category.findOne({ category });
+      if (!categoryDoc) {
+        throw createError(404, `Category '${category}' not found!`);
+      }
+      categoryId = categoryDoc._id;
     }
+
+    // Find Brand by Name if brand is not an ObjectId
+    let brandId = brand;
+    if (!mongoose.isValidObjectId(brand)) {
+      const brandDoc = await Brand.findOne({ brand });
+      if (!brandDoc) {
+        throw createError(404, `Brand '${brand}' not found!`);
+      }
+      brandId = brandDoc._id;
+    }
+
     if (!mongoose.isValidObjectId(brand)) {
       throw createError(400, "Invalid brand ID");
     }
 
-    // Check if category and brand exist
-    const existingCategory = await Category.findById(category);
-    if (!existingCategory) {
-      throw createError(404, "Category not found");
-    }
-
-    const existingBrand = await Brand.findById(brand);
-    if (!existingBrand) {
-      throw createError(404, "Brand not found");
-    }
-
+    // handle upload image
     const image = req.file;
     let imageUrl = "";
     if (image) {
@@ -71,6 +77,20 @@ const handleCreateProduct = async (
       category,
       brand,
     });
+
+    // Update the category's products array
+    await Category.findByIdAndUpdate(
+      categoryId,
+      { $push: { products: newProduct._id } },
+      { new: true }
+    );
+
+    // Update the brand's products array
+    await Brand.findByIdAndUpdate(
+      brandId,
+      { $push: { products: newProduct._id } },
+      { new: true }
+    );
 
     successResponse(res, {
       statusCode: 201,
