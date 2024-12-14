@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import { v2 as cloudinary } from "cloudinary";
 import createError from "http-errors";
-import fs from "fs";
 
 import User from "../models/userModel";
 import { successResponse } from "./responseController";
 import uploadToCloudinary from "../helper/uploadToCloudinary";
 import { defaultImagePath } from "../secret";
+import unlinkImageFromLocal from "../helper/unlinkImageFromLocal";
 
 // Create a new user - Process register
 const handleUserRegister = async (
@@ -44,7 +44,7 @@ const handleUserRegister = async (
       imageUrl = uploadedImageResult.secure_url;
 
       // Optionally delete the file from the local server
-      fs.unlinkSync(image.path);
+      unlinkImageFromLocal(image.path);
     }
 
     const newUser = { name, email, password, image: imageUrl };

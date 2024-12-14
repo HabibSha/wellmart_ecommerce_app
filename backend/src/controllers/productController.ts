@@ -3,13 +3,13 @@ import { v2 as cloudinary } from "cloudinary";
 import createError from "http-errors";
 import mongoose from "mongoose";
 import slugify from "slugify";
-import fs from "fs";
 
 import Product from "../models/productModel";
 import Category from "../models/categoryModel";
 import Brand from "../models/brandModel";
 import { successResponse } from "./responseController";
 import uploadToCloudinary from "../helper/uploadToCloudinary";
+import unlinkImageFromLocal from "../helper/unlinkImageFromLocal";
 
 // Create a new product
 const handleCreateProduct = async (
@@ -62,21 +62,8 @@ const handleCreateProduct = async (
     uploadedImageResult = await uploadToCloudinary(image.path);
     imageUrl = uploadedImageResult.secure_url;
 
-    console.log(image.path);
-    console.log(imageUrl);
-
     // Delete image from local file storage
-
-    if (fs.existsSync(image.path)) {
-      try {
-        fs.unlinkSync(image.path);
-        console.log("Local file deleted successfully");
-      } catch (err) {
-        console.error("Failed to delete local file:", err);
-      }
-    } else {
-      console.error("File path does not exist:", image.path);
-    }
+    unlinkImageFromLocal(image.path);
 
     const slug = slugify(title, { lower: true, strict: true });
 
