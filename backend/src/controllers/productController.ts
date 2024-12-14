@@ -62,8 +62,21 @@ const handleCreateProduct = async (
     uploadedImageResult = await uploadToCloudinary(image.path);
     imageUrl = uploadedImageResult.secure_url;
 
+    console.log(image.path);
+    console.log(imageUrl);
+
     // Delete image from local file storage
-    fs.unlinkSync(image.path);
+
+    if (fs.existsSync(image.path)) {
+      try {
+        fs.unlinkSync(image.path);
+        console.log("Local file deleted successfully");
+      } catch (err) {
+        console.error("Failed to delete local file:", err);
+      }
+    } else {
+      console.error("File path does not exist:", image.path);
+    }
 
     const slug = slugify(title, { lower: true, strict: true });
 
