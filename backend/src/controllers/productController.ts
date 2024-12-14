@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { v2 as cloudinary } from "cloudinary";
 import createError from "http-errors";
 import mongoose from "mongoose";
 import slugify from "slugify";
@@ -18,6 +19,9 @@ const handleCreateProduct = async (
 ): Promise<void> => {
   const { title, description, price, quantity, sold, category, brand } =
     req.body;
+
+  let uploadedImageResult = null;
+  let imageUrl = "";
 
   try {
     // Find Category by Name if category is not an ObjectId
@@ -40,25 +44,26 @@ const handleCreateProduct = async (
       brandId = brandDoc._id;
     }
 
-    // handle upload image
-    const image = req.file;
-    let imageUrl = "";
-    if (image) {
-      if (image.size > 1024 * 1024 * 2) {
-        throw createError(400, "File is too large. It must be less than 2 MB");
-      }
-
-      const result = await uploadToCloudinary(image.path);
-      imageUrl = result.secure_url;
-
-      // delete image from local file
-      fs.unlinkSync(image.path);
-    }
-
     const existingProduct = await Product.exists({ title });
     if (existingProduct) {
       throw createError(409, "Product with this name already exists");
     }
+
+    // handle upload image
+    const image = req.file;
+    if (!image) {
+      throw createError(400, "Product image is required");
+    }
+
+    if (image.size > 1024 * 1024 * 2) {
+      throw createError(400, "File is too large. It must be less than 2 MB");
+    }
+
+    uploadedImageResult = await uploadToCloudinary(image.path);
+    imageUrl = uploadedImageResult.secure_url;
+
+    // Delete image from local file storage
+    fs.unlinkSync(image.path);
 
     const slug = slugify(title, { lower: true, strict: true });
 
@@ -94,6 +99,10 @@ const handleCreateProduct = async (
       payload: newProduct,
     });
   } catch (error) {
+    // Cleanup: delete the uploaded image from Cloudinary if an error occurred
+    if (uploadedImageResult?.public_id) {
+      await cloudinary.uploader.destroy(uploadedImageResult.public_id);
+    }
     next(error);
   }
 };

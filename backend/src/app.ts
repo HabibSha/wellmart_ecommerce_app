@@ -31,7 +31,6 @@ app.get("/", (_req: Request, res: Response, _next: NextFunction) => {
 });
 
 //todo: Not found error-handling middleware
-
 app.use((_req: Request, _res: Response, next: NextFunction) => {
   next(createError(404, "Router not found!"));
 });

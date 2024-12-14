@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { v2 as cloudinary } from "cloudinary";
 import createError from "http-errors";
 import fs from "fs";
 
@@ -15,6 +16,9 @@ const handleUserRegister = async (
 ): Promise<void> => {
   const { name, email, password } = req.body;
 
+  let uploadedImageResult = null;
+  let imageUrl: string = defaultImagePath;
+
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -24,27 +28,23 @@ const handleUserRegister = async (
       );
     }
 
-    let imageUrl: string = defaultImagePath;
-
+    // handle image upload
     if (req.file) {
-      const file = req.file;
+      const image = req.file;
 
-      if (file.size > 1024 * 1024 * 2) {
+      if (image.size > 1024 * 1024 * 2) {
         throw createError(400, "File too large. It must be less than 2 MB");
       }
 
-      const image = file?.path;
-
-      // Upload the file to Cloudinary
-      const result = await uploadToCloudinary(image);
-      if (!result || !result.secure_url) {
+      uploadedImageResult = await uploadToCloudinary(image?.path);
+      if (!uploadedImageResult || !uploadedImageResult.secure_url) {
         throw new Error("Failed to upload image to Cloudinary");
       }
 
-      imageUrl = result.secure_url;
+      imageUrl = uploadedImageResult.secure_url;
 
       // Optionally delete the file from the local server
-      fs.unlinkSync(image);
+      fs.unlinkSync(image.path);
     }
 
     const newUser = { name, email, password, image: imageUrl };
@@ -53,9 +53,13 @@ const handleUserRegister = async (
     successResponse(res, {
       statusCode: 201,
       message: "Your account has been successfully created",
-      payload: [user],
+      payload: user,
     });
   } catch (error) {
+    // Cleanup: delete the uploaded image from Cloudinary if an error occurred
+    if (uploadedImageResult?.public_id) {
+      await cloudinary.uploader.destroy(uploadedImageResult.public_id);
+    }
     next(error);
   }
 };
