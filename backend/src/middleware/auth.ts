@@ -23,24 +23,24 @@ const isLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const isLoggedOut = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const accessToken = req.cookies.accessToken;
-    if (!accessToken) {
-      throw createError(401, "Access token not found. Please login");
-    }
+// const isLoggedOut = async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//     const accessToken = req.cookies.accessToken;
+//     if (!accessToken) {
+//       throw createError(401, "Access token not found. Please login");
+//     }
 
-    const decoded = jwt.verify(accessToken, jwtAccessKey);
-    if (!decoded) {
-      throw createError(401, "Invalid access token. Please login");
-    }
+//     const decoded = jwt.verify(accessToken, jwtAccessKey);
+//     if (!decoded) {
+//       throw createError(401, "Invalid access token. Please login");
+//     }
 
-    // req.user = decoded.user;
-    next();
-  } catch (error) {
-    return next(error);
-  }
-};
+//     // req.user = decoded.user;
+//     next();
+//   } catch (error) {
+//     return next(error);
+//   }
+// };
 
 const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -58,4 +58,4 @@ const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export { isLoggedIn, isLoggedOut, isAdmin };
+export { isLoggedIn, isAdmin };
