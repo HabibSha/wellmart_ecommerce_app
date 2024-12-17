@@ -1,6 +1,9 @@
 import { Router } from "express";
 
-import { handleCreateProduct } from "../controllers/productController";
+import {
+  handleCreateProduct,
+  handleGetAllProducts,
+} from "../controllers/productController";
 import { uploadProductImage } from "../middleware/fileUpload";
 import { validateProduct } from "../validation/product";
 import runValidation from "../validation";
@@ -14,5 +17,6 @@ productRouter.post(
   runValidation,
   handleCreateProduct
 );
+productRouter.get("/", handleGetAllProducts);
 
 export default productRouter;

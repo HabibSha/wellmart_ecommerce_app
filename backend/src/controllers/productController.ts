@@ -24,7 +24,7 @@ const handleCreateProduct = async (
   let imageUrl = "";
 
   try {
-    // Find Category by Name if category is not an ObjectId
+    // Find Category by Name if category (taken from req.body) is not an ObjectId
     let categoryId = category;
     if (!mongoose.isValidObjectId(category)) {
       const categoryDoc = await Category.findOne({ title: category });
@@ -34,7 +34,7 @@ const handleCreateProduct = async (
       categoryId = categoryDoc._id;
     }
 
-    // Find Brand by Name if brand is not an ObjectId
+    // Find Brand by Name if brand (taken from req.body) is not an ObjectId
     let brandId = brand;
     if (!mongoose.isValidObjectId(brand)) {
       const brandDoc = await Brand.findOne({ title: brand });
@@ -107,4 +107,26 @@ const handleCreateProduct = async (
   }
 };
 
-export { handleCreateProduct };
+// Get all products
+const handleGetAllProducts = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const products = await Product.find();
+    if (!products) {
+      throw createError(404, "Products not found!");
+    }
+
+    successResponse(res, {
+      statusCode: 200,
+      message: "Products returned successfully",
+      payload: products,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { handleCreateProduct, handleGetAllProducts };

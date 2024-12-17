@@ -64,7 +64,7 @@ const handleUserRegister = async (
   }
 };
 
-// Get all the users by admin
+// Get all users by admin
 const handleGetAllUsers = async (
   _req: Request,
   res: Response,
