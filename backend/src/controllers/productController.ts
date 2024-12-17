@@ -191,9 +191,33 @@ const handleDeleteProduct = async (
   }
 };
 
+// Update product
+const handleUpdateProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { slug } = req.params;
+  try {
+    const product = await Product.findOne({ slug });
+    if (!product) {
+      throw createError(404, "Product not found!");
+    }
+
+    successResponse(res, {
+      statusCode: 200,
+      message: "Product was returned successfully",
+      payload: product,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   handleCreateProduct,
   handleGetProducts,
   handleGetProduct,
   handleDeleteProduct,
+  handleUpdateProduct,
 };
