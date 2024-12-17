@@ -199,15 +199,40 @@ const handleUpdateProduct = async (
 ): Promise<void> => {
   const { slug } = req.params;
   try {
-    const product = await Product.findOne({ slug });
-    if (!product) {
-      throw createError(404, "Product not found!");
+    const updateOptions = { new: true, runValidators: true, context: "query" };
+    let updates = {};
+
+    const allowedFields = [
+      "name",
+      "description",
+      "price",
+      "sold",
+      "quantity",
+      "shipping",
+    ];
+
+    // for (const key in req.body) {
+    //   if (allowedFields.includes(key)) {
+    //     if (key === "name") {
+    //       updates.slug = slugify(req.body[key]);
+    //     }
+    //     updates[key] = req.body[key];
+    //   }
+    // }
+
+    const updatedProduct = await Product.findOneAndUpdate(
+      { slug },
+      updates,
+      updateOptions
+    );
+    if (!updatedProduct) {
+      throw createError(400, "Product was not updated successfully");
     }
 
     successResponse(res, {
       statusCode: 200,
-      message: "Product was returned successfully",
-      payload: product,
+      message: "Product was updated successfully",
+      payload: updatedProduct,
     });
   } catch (error) {
     next(error);
