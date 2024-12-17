@@ -152,4 +152,48 @@ const handleGetProduct = async (
   }
 };
 
-export { handleCreateProduct, handleGetProducts, handleGetProduct };
+// Delete a single product
+const handleDeleteProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { slug } = req.params;
+  try {
+    const product = await Product.findOneAndDelete({ slug });
+    if (!product) {
+      throw createError(404, "Product not found!");
+    }
+
+    if (product.image && typeof product.image[0] === "string") {
+      // Extract public_id from the Cloudinary image URL
+      const imageUrlParts = product.image[0].split("/"); // Split the URL into parts
+      const publicIdWithExt = imageUrlParts.slice(-2).join("/"); // Get last two parts and join them
+      const publicId = publicIdWithExt.replace(/\.[^/.]+$/, ""); // Remove file extension
+
+      await cloudinary.uploader.destroy(publicId);
+    }
+
+    // remove product from category and brand's products array
+    await Category.findOneAndUpdate(product.category, {
+      $pull: { products: product._id },
+    });
+    await Brand.findOneAndUpdate(product.brand, {
+      $pull: { products: product._id },
+    });
+
+    successResponse(res, {
+      statusCode: 200,
+      message: "Product was deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export {
+  handleCreateProduct,
+  handleGetProducts,
+  handleGetProduct,
+  handleDeleteProduct,
+};
