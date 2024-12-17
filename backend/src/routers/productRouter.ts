@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import {
   handleCreateProduct,
-  handleGetAllProducts,
+  handleGetProducts,
 } from "../controllers/productController";
 import { uploadProductImage } from "../middleware/fileUpload";
 import { validateProduct } from "../validation/product";
@@ -17,6 +17,6 @@ productRouter.post(
   runValidation,
   handleCreateProduct
 );
-productRouter.get("/", handleGetAllProducts);
+productRouter.get("/", handleGetProducts);
 
 export default productRouter;

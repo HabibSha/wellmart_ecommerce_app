@@ -108,7 +108,7 @@ const handleCreateProduct = async (
 };
 
 // Get all products
-const handleGetAllProducts = async (
+const handleGetProducts = async (
   _req: Request,
   res: Response,
   next: NextFunction
@@ -116,7 +116,7 @@ const handleGetAllProducts = async (
   try {
     const products = await Product.find();
     if (!products) {
-      throw createError(404, "Products not found!");
+      throw createError(404, "No Products found!");
     }
 
     successResponse(res, {
@@ -129,4 +129,27 @@ const handleGetAllProducts = async (
   }
 };
 
-export { handleCreateProduct, handleGetAllProducts };
+// Get a single product
+const handleGetProduct = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { slug } = req.params;
+  try {
+    const product = await Product.findOne({ slug });
+    if (!product) {
+      throw createError(404, "Product not found!");
+    }
+
+    successResponse(res, {
+      statusCode: 200,
+      message: "Product was returned successfully",
+      payload: product,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { handleCreateProduct, handleGetProducts, handleGetProduct };
