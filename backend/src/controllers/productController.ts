@@ -230,6 +230,19 @@ const handleUpdateProduct = async (
       throw createError(400, "Product was not updated successfully");
     }
 
+    await Category.findByIdAndUpdate(
+      updatedProduct.category,
+      { $push: { products: updatedProduct._id } },
+      { new: true }
+    );
+
+    // Update the brand's products array
+    await Brand.findByIdAndUpdate(
+      updatedProduct.brand,
+      { $push: { products: updatedProduct._id } },
+      { new: true }
+    );
+
     successResponse(res, {
       statusCode: 200,
       message: "Product was updated successfully",
