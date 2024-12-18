@@ -200,25 +200,26 @@ const handleUpdateProduct = async (
   const { slug } = req.params;
   try {
     const updateOptions = { new: true, runValidators: true, context: "query" };
-    let updates = {};
+    let updates: object = {};
 
     const allowedFields = [
-      "name",
+      "title",
       "description",
       "price",
       "sold",
       "quantity",
-      "shipping",
+      "category",
+      "brand",
     ];
 
-    // for (const key in req.body) {
-    //   if (allowedFields.includes(key)) {
-    //     if (key === "name") {
-    //       updates.slug = slugify(req.body[key]);
-    //     }
-    //     updates[key] = req.body[key];
-    //   }
-    // }
+    for (const key in req.body) {
+      if (allowedFields.includes(key)) {
+        if (key === "title") {
+          updates.slug = slugify(req.body[key]);
+        }
+        updates[key] = req.body[key];
+      }
+    }
 
     const updatedProduct = await Product.findOneAndUpdate(
       { slug },
