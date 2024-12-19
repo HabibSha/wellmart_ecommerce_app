@@ -49,7 +49,7 @@ const productSchema = new mongoose.Schema(
       trim: true,
       default: 0,
     },
-    image: [{ type: String, required: [true, "Product image is required"] }],
+    images: [{ type: String, required: [true, "Product image is required"] }],
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",

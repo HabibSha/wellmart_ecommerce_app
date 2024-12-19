@@ -10,6 +10,7 @@ import Brand from "../models/brandModel";
 import { successResponse } from "./responseController";
 import uploadToCloudinary from "../helper/uploadToCloudinary";
 import unlinkImageFromLocal from "../helper/unlinkImageFromLocal";
+import extractPublicId from "../helper/extractPublicId";
 
 // Create a new product
 const handleCreateProduct = async (
@@ -74,7 +75,7 @@ const handleCreateProduct = async (
       price,
       quantity,
       sold: sold || 0,
-      image: imageUrl,
+      images: imageUrl,
       category: categoryId,
       brand: brandId,
     });
@@ -165,13 +166,15 @@ const handleDeleteProduct = async (
       throw createError(404, "Product not found!");
     }
 
-    if (product.image && typeof product.image[0] === "string") {
-      // Extract public_id from the Cloudinary image URL
-      const imageUrlParts = product.image[0].split("/"); // Split the URL into parts
-      const publicIdWithExt = imageUrlParts.slice(-2).join("/"); // Get last two parts and join them
-      const publicId = publicIdWithExt.replace(/\.[^/.]+$/, ""); // Remove file extension
-
-      await cloudinary.uploader.destroy(publicId);
+    if (product.images && product.images.length > 0) {
+      // Iterate over each image URL in the array and delete it from Cloudinary
+      for (const imageUrl of product.images) {
+        const publicId = extractPublicId(imageUrl);
+        if (publicId) {
+          await cloudinary.uploader.destroy(publicId);
+          console.log(`Deleted image: ${publicId}`);
+        }
+      }
     }
 
     // remove product from category and brand's products array
