@@ -138,7 +138,10 @@ const handleGetProduct = async (
 ): Promise<void> => {
   const { slug } = req.params;
   try {
-    const product = await Product.findOne({ slug });
+    const product = await Product.findOne({ slug }).populate([
+      { path: "category", select: "-__v -products" },
+      { path: "brand", select: "-__v -products" },
+    ]);
     if (!product) {
       throw createError(404, "Product not found!");
     }
@@ -231,12 +234,14 @@ const handleUpdateProduct = async (
 
     const updatedProduct = await Product.findOneAndUpdate(
       { slug },
-      updates,
+      { $set: updates },
       updateOptions
     );
     if (!updatedProduct) {
       throw createError(400, "Product was not updated successfully");
     }
+
+    console.log(updatedProduct);
 
     // handle category changes
     if (
