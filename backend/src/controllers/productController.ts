@@ -203,7 +203,7 @@ const handleUpdateProduct = async (
   const { slug } = req.params;
   try {
     const updateOptions = { new: true, runValidators: true, context: "query" };
-    let updates: object = {};
+    let updates: { [key: string]: any } = {};
 
     const allowedFields = [
       "title",
@@ -224,6 +224,11 @@ const handleUpdateProduct = async (
       }
     }
 
+    const existingProduct = await Product.findOne({ slug });
+    if (!existingProduct) {
+      throw createError(404, "Product not found!");
+    }
+
     const updatedProduct = await Product.findOneAndUpdate(
       { slug },
       updates,
@@ -233,18 +238,32 @@ const handleUpdateProduct = async (
       throw createError(400, "Product was not updated successfully");
     }
 
-    await Category.findByIdAndUpdate(
-      updatedProduct.category,
-      { $push: { products: updatedProduct._id } },
-      { new: true }
-    );
+    // handle category changes
+    if (
+      req.body.category &&
+      req.body.category !== existingProduct.category.toString()
+    ) {
+      // remove from previous category
+      await Category.findByIdAndUpdate(existingProduct.category, {
+        $pull: { products: existingProduct._id },
+      });
 
-    // Update the brand's products array
-    await Brand.findByIdAndUpdate(
-      updatedProduct.brand,
-      { $push: { products: updatedProduct._id } },
-      { new: true }
-    );
+      // add to the updated category
+      await Category.findByIdAndUpdate(req.body.category, {
+        $push: { products: updatedProduct._id },
+      });
+    }
+
+    // handle brand changes
+    if (req.body.brand && req.body.brand !== existingProduct.brand.toString()) {
+      await Brand.findByIdAndUpdate(existingProduct.brand, {
+        $pull: { products: existingProduct._id },
+      });
+
+      await Brand.findByIdAndUpdate(req.body.brand, {
+        $push: { products: updatedProduct._id },
+      });
+    }
 
     successResponse(res, {
       statusCode: 200,
