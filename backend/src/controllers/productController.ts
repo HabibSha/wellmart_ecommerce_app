@@ -110,12 +110,23 @@ const handleCreateProduct = async (
 
 // Get all products
 const handleGetProducts = async (
-  _req: Request,
+  req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const products = await Product.find();
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.page as string) || 5;
+
+    const products = await Product.find()
+      .populate([
+        { path: "category", select: "-__v -products" },
+        { path: "brand", select: "-__v -products" },
+      ])
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .sort({ createdAt: -1 }); // recent created products will be shown on the first page
+
     if (!products) {
       throw createError(404, "No Products found!");
     }
@@ -123,7 +134,16 @@ const handleGetProducts = async (
     successResponse(res, {
       statusCode: 200,
       message: "Products returned successfully",
-      payload: products,
+      payload: {
+        products: products,
+        pagination: {
+          // totalPages: Math.ceil(count / limit),
+          currentPage: page,
+          previousPage: page - 1,
+          nextPage: page + 1,
+          totalNumberOfProducts: products.length,
+        },
+      },
     });
   } catch (error) {
     next(error);
@@ -282,7 +302,7 @@ const handleUpdateProduct = async (
 
 // TODO: Get products by Category & Brand
 
-const getProductsByCategory = async (
+const handleGetProductsByCategory = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -306,7 +326,7 @@ const getProductsByCategory = async (
   }
 };
 
-const getProductsByBrand = async (
+const handleGetProductsByBrand = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -336,4 +356,6 @@ export {
   handleGetProduct,
   handleDeleteProduct,
   handleUpdateProduct,
+  handleGetProductsByCategory,
+  handleGetProductsByBrand,
 };

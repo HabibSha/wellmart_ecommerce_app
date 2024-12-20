@@ -6,6 +6,8 @@ import {
   handleGetProduct,
   handleDeleteProduct,
   handleUpdateProduct,
+  handleGetProductsByCategory,
+  handleGetProductsByBrand,
 } from "../controllers/productController";
 import { uploadProductImage } from "../middleware/fileUpload";
 import { validateProduct } from "../validation/product";
@@ -24,5 +26,9 @@ productRouter.get("/", handleGetProducts);
 productRouter.get("/:slug", handleGetProduct);
 productRouter.delete("/:slug", handleDeleteProduct);
 productRouter.put("/:slug", handleUpdateProduct);
+
+// get products by category & brand router
+productRouter.get("/get/category", handleGetProductsByCategory);
+productRouter.get("/get/brand", handleGetProductsByBrand);
 
 export default productRouter;
