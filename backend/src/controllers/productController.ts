@@ -280,6 +280,56 @@ const handleUpdateProduct = async (
   }
 };
 
+// TODO: Get products by Category & Brand
+
+const getProductsByCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const category = req.query.category;
+  try {
+    const products = await Product.find({ category }).populate([
+      { path: "category", select: "-__v -products" },
+      { path: "brand", select: "-__v -products" },
+    ]);
+
+    if (!products) throw createError(404, "No products found!");
+
+    successResponse(res, {
+      statusCode: 200,
+      message: "Products returned successfully",
+      payload: products,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getProductsByBrand = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const brand = req.query.category;
+  try {
+    const products = await Product.find({ brand }).populate([
+      { path: "category", select: "-__v -products" },
+      { path: "brand", select: "-__v -products" },
+    ]);
+
+    if (!products) throw createError(404, "No products found!");
+
+    successResponse(res, {
+      statusCode: 200,
+      message: "Product was updated successfully",
+      payload: products,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   handleCreateProduct,
   handleGetProducts,
