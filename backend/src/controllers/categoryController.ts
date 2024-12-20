@@ -5,7 +5,7 @@ import createError from "http-errors";
 import Category from "../models/categoryModel";
 import { successResponse } from "./responseController";
 
-// Create a brand
+// Create a category
 const handleCreateCategory = async (
   req: Request,
   res: Response,
@@ -35,4 +35,26 @@ const handleCreateCategory = async (
   }
 };
 
-export { handleCreateCategory };
+// Get all brand
+const handleGetCategories = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const categories = await Category.find().select("name slug").lean();
+    if (!categories) {
+      throw createError(404, "No categories found!");
+    }
+
+    successResponse(res, {
+      statusCode: 200,
+      message: "Categories returned successfully",
+      payload: categories,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { handleCreateCategory, handleGetCategories };
