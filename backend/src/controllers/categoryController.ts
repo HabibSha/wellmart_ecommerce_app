@@ -35,7 +35,7 @@ const handleCreateCategory = async (
   }
 };
 
-// Get all brand
+// Get all category
 const handleGetCategories = async (
   req: Request,
   res: Response,
@@ -57,4 +57,27 @@ const handleGetCategories = async (
   }
 };
 
-export { handleCreateCategory, handleGetCategories };
+// Get a single category
+const handleGetCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { slug } = req.params;
+    const category = await Category.findOne({ slug });
+    if (!category) {
+      throw createError(404, "Category not found!");
+    }
+
+    successResponse(res, {
+      statusCode: 200,
+      message: "Category was returned successfully",
+      payload: category,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { handleCreateCategory, handleGetCategories, handleGetCategory };
