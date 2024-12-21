@@ -80,4 +80,32 @@ const handleGetCategory = async (
   }
 };
 
-export { handleCreateCategory, handleGetCategories, handleGetCategory };
+// Delete a single category
+const handleDeleteCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { slug } = req.params;
+    const category = await Category.findOneAndDelete({ slug });
+    if (!category) {
+      throw createError(404, "Category not found!");
+    }
+
+    successResponse(res, {
+      statusCode: 200,
+      message: "Category was deleted successfully",
+      payload: category,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export {
+  handleCreateCategory,
+  handleGetCategories,
+  handleGetCategory,
+  handleDeleteCategory,
+};
