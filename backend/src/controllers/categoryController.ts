@@ -49,7 +49,7 @@ const handleGetCategories = async (
 
     successResponse(res, {
       statusCode: 200,
-      message: "Categories returned successfully",
+      message: "Categories were returned successfully",
       payload: categories,
     });
   } catch (error) {
@@ -68,7 +68,7 @@ const handleGetCategory = async (
   try {
     const category = await Category.findOne({ slug });
     if (!category) {
-      throw createError(404, "Category not found!");
+      throw createError(404, "No category found with this slug!");
     }
 
     successResponse(res, {
@@ -92,13 +92,13 @@ const handleDeleteCategory = async (
   try {
     const category = await Category.findOneAndDelete({ slug });
     if (!category) {
-      throw createError(404, "Category not found!");
+      throw createError(404, "No category found with this slug!");
     }
 
     successResponse(res, {
       statusCode: 200,
       message: "Category was deleted successfully",
-      payload: category,
+      payload: {},
     });
   } catch (error) {
     next(error);
@@ -125,7 +125,7 @@ const handleUpdateCategory = async (
       option,
     }).select("-products");
     if (!category) {
-      throw createError(404, "Category not found!");
+      throw createError(404, "No category found with this slug!");
     }
 
     successResponse(res, {

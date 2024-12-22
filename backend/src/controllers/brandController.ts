@@ -51,7 +51,7 @@ const handleGetBrands = async (
 
     successResponse(res, {
       statusCode: 200,
-      message: "Brands returned successfully",
+      message: "Brands were returned successfully",
       payload: brands,
     });
   } catch (error) {
@@ -84,5 +84,32 @@ const handleGetBrand = async (
 };
 
 // Delete brand
+const handleDeleteBrand = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { slug } = req.params;
 
-export { handleCreateBrand, handleGetBrands, handleGetBrand };
+  try {
+    const brand = await Brand.findOneAndDelete({ slug });
+    if (!brand) {
+      throw createError(404, "Brand not found!");
+    }
+
+    successResponse(res, {
+      statusCode: 200,
+      message: "Brand was deleted successfully",
+      payload: {},
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export {
+  handleCreateBrand,
+  handleGetBrands,
+  handleGetBrand,
+  handleDeleteBrand,
+};
