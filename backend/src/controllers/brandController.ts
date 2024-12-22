@@ -59,4 +59,30 @@ const handleGetBrands = async (
   }
 };
 
-export { handleCreateBrand, handleGetBrands };
+// Get a single brand
+const handleGetBrand = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { slug } = req.params;
+
+  try {
+    const brand = await Brand.findOne({ slug });
+    if (!brand) {
+      throw createError(404, "Brand not found!");
+    }
+
+    successResponse(res, {
+      statusCode: 200,
+      message: "Brand was returned successfully",
+      payload: brand,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Delete brand
+
+export { handleCreateBrand, handleGetBrands, handleGetBrand };
