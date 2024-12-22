@@ -42,7 +42,7 @@ const handleGetCategories = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const categories = await Category.find().select("name slug").lean();
+    const categories = await Category.find().select("title slug").lean();
     if (!categories) {
       throw createError(404, "No categories found!");
     }
@@ -63,8 +63,9 @@ const handleGetCategory = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
+  const { slug } = req.params;
+
   try {
-    const { slug } = req.params;
     const category = await Category.findOne({ slug });
     if (!category) {
       throw createError(404, "Category not found!");
@@ -86,8 +87,9 @@ const handleDeleteCategory = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
+  const { slug } = req.params;
+
   try {
-    const { slug } = req.params;
     const category = await Category.findOneAndDelete({ slug });
     if (!category) {
       throw createError(404, "Category not found!");
@@ -103,15 +105,25 @@ const handleDeleteCategory = async (
   }
 };
 
-// Delete a single category
+// Update category
 const handleUpdateCategory = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
+  const { slug } = req.params;
+  const { title } = req.body;
+
   try {
-    const { slug } = req.params;
-    const category = await Category.findOneAndUpdate({ slug });
+    const filter = { slug };
+    const updates = { $set: { title: title, slug: slugify(title) } };
+    const option = { new: true };
+
+    const category = await Category.findOneAndUpdate({
+      filter,
+      updates,
+      option,
+    }).select("-products");
     if (!category) {
       throw createError(404, "Category not found!");
     }
