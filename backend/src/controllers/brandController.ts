@@ -35,4 +35,28 @@ const handleCreateBrand = async (
   }
 };
 
-export { handleCreateBrand };
+// Get all brands
+const handleGetBrands = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { title } = req.body;
+
+  try {
+    const brands = await Brand.find().select("title slug").lean();
+    if (!brands) {
+      throw createError(404, "No brands found!");
+    }
+
+    successResponse(res, {
+      statusCode: 200,
+      message: "Brands returned successfully",
+      payload: brands,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { handleCreateBrand, handleGetBrands };
