@@ -107,9 +107,43 @@ const handleDeleteBrand = async (
   }
 };
 
+// Get a single brand
+const handleUpdateBrand = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { slug } = req.params;
+  const { title } = req.body;
+
+  try {
+    const filter = { slug };
+    const updates = { $set: { title: title, slug: slugify(slug) } };
+    const option = { new: true };
+
+    const updatedBrand = await Brand.findOneAndUpdate({
+      filter,
+      updates,
+      option,
+    });
+    if (!updatedBrand) {
+      throw createError(404, "No brand was found with this slug!");
+    }
+
+    successResponse(res, {
+      statusCode: 200,
+      message: "Brand was updated successfully",
+      payload: updatedBrand,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   handleCreateBrand,
   handleGetBrands,
   handleGetBrand,
   handleDeleteBrand,
+  handleUpdateBrand,
 };
