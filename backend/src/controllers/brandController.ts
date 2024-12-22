@@ -41,8 +41,6 @@ const handleGetBrands = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const { title } = req.body;
-
   try {
     const brands = await Brand.find().select("title slug").lean();
     if (!brands) {
@@ -70,7 +68,7 @@ const handleGetBrand = async (
   try {
     const brand = await Brand.findOne({ slug });
     if (!brand) {
-      throw createError(404, "Brand not found!");
+      throw createError(404, "No brand found with this slug!");
     }
 
     successResponse(res, {
@@ -94,7 +92,7 @@ const handleDeleteBrand = async (
   try {
     const brand = await Brand.findOneAndDelete({ slug });
     if (!brand) {
-      throw createError(404, "Brand not found!");
+      throw createError(404, "No brand found with this slug!");
     }
 
     successResponse(res, {
@@ -107,7 +105,7 @@ const handleDeleteBrand = async (
   }
 };
 
-// Get a single brand
+// Update brand
 const handleUpdateBrand = async (
   req: Request,
   res: Response,
@@ -127,7 +125,7 @@ const handleUpdateBrand = async (
       option,
     });
     if (!updatedBrand) {
-      throw createError(404, "No brand was found with this slug!");
+      throw createError(404, "No brand found with this slug!");
     }
 
     successResponse(res, {
