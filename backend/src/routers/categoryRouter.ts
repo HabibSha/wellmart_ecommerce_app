@@ -7,10 +7,12 @@ import {
   handleDeleteCategory,
   handleUpdateCategory,
 } from "../controllers/categoryController";
+import validateCategory from "../validation/category";
+import runValidation from "../validation";
 
 const categoryRouter = Router();
 
-categoryRouter.post("/", handleCreateCategory);
+categoryRouter.post("/", validateCategory, runValidation, handleCreateCategory);
 categoryRouter.get("/", handleGetCategories);
 categoryRouter.get("/", handleGetCategory);
 categoryRouter.delete("/", handleDeleteCategory);
