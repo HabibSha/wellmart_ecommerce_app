@@ -12,8 +12,8 @@ const brandRouter = Router();
 
 brandRouter.post("/", handleCreateBrand);
 brandRouter.get("/", handleGetBrands);
-brandRouter.get("/", handleGetBrand);
-brandRouter.delete("/", handleDeleteBrand);
-brandRouter.put("/", handleUpdateBrand);
+brandRouter.get("/:slug", handleGetBrand);
+brandRouter.delete("/:slug", handleDeleteBrand);
+brandRouter.put("/:slug", handleUpdateBrand);
 
 export default brandRouter;

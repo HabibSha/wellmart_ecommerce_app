@@ -116,14 +116,10 @@ const handleUpdateBrand = async (
 
   try {
     const filter = { slug };
-    const updates = { $set: { title: title, slug: slugify(slug) } };
+    const updates = { $set: { title: title, slug: slugify(title) } };
     const option = { new: true };
 
-    const updatedBrand = await Brand.findOneAndUpdate({
-      filter,
-      updates,
-      option,
-    });
+    const updatedBrand = await Brand.findOneAndUpdate(filter, updates, option);
     if (!updatedBrand) {
       throw createError(404, "No brand found with this slug!");
     }

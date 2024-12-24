@@ -119,11 +119,11 @@ const handleUpdateCategory = async (
     const updates = { $set: { title: title, slug: slugify(title) } };
     const option = { new: true };
 
-    const category = await Category.findOneAndUpdate({
+    const category = await Category.findOneAndUpdate(
       filter,
       updates,
-      option,
-    }).select("-products");
+      option
+    ).select("-products");
     if (!category) {
       throw createError(404, "No category found with this slug!");
     }
