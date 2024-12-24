@@ -247,6 +247,9 @@ const handleUpdateProduct = async (
       }
     }
 
+    console.log(req.body);
+    console.log(allowedFields);
+
     const existingProduct = await Product.findOne({ slug });
     if (!existingProduct) {
       throw createError(404, "Product not found!");
