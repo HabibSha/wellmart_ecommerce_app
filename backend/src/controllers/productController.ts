@@ -240,10 +240,10 @@ const handleUpdateProduct = async (
 
     for (const key in req.body) {
       if (allowedFields.includes(key)) {
+        updates[key] = req.body[key];
         if (key === "title") {
           updates.slug = slugify(req.body[key]);
         }
-        updates[key] = req.body[key];
       }
     }
 
@@ -262,6 +262,7 @@ const handleUpdateProduct = async (
     }
 
     console.log(updatedProduct);
+    console.log(updates);
 
     // handle category changes
     if (
