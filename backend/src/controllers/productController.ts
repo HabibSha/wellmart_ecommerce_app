@@ -322,7 +322,7 @@ const handleGetProductsByCategory = async (
 
     successResponse(res, {
       statusCode: 200,
-      message: "Products returned successfully",
+      message: "Products were returned successfully",
       payload: products,
     });
   } catch (error) {
@@ -346,7 +346,7 @@ const handleGetProductsByBrand = async (
 
     successResponse(res, {
       statusCode: 200,
-      message: "Product was updated successfully",
+      message: "Products were returned successfully",
       payload: products,
     });
   } catch (error) {
