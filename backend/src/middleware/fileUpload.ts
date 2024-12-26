@@ -7,6 +7,8 @@ import {
   MAX_FILE_SIZE,
   ALLOWED_FILE_TYPES,
   UPLOAD_PRODUCT_IMG_DIR,
+  UPLOAD_CATEGORY_IMG_DIR,
+  UPLOAD_BRAND_IMG_DIR,
 } from "../config";
 
 // user storage
@@ -63,6 +65,60 @@ const fileFilterProduct = (
   cb(null, true);
 };
 
+// category storage
+const categoryStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, UPLOAD_CATEGORY_IMG_DIR); // Temporary directory
+  },
+  filename: (req, file, cb) => {
+    const fileExt = path.extname(file.originalname).toLowerCase();
+    cb(
+      null,
+      Date.now() + "-" + file.originalname.replace(fileExt, "") + fileExt
+    );
+  },
+});
+
+const fileFilterCategory = (
+  _req: Request,
+  file: Express.Multer.File,
+  cb: FileFilterCallback
+): void => {
+  const extname = path.extname(file.originalname).toString();
+  if (!ALLOWED_FILE_TYPES.includes(file.mimetype)) {
+    const error = new Error(`File type not allowed: ${extname}`);
+    cb(error as unknown as null, false);
+  }
+  cb(null, true);
+};
+
+// brand storage
+const brandStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, UPLOAD_BRAND_IMG_DIR); // Temporary directory
+  },
+  filename: (req, file, cb) => {
+    const fileExt = path.extname(file.originalname).toLowerCase();
+    cb(
+      null,
+      Date.now() + "-" + file.originalname.replace(fileExt, "") + fileExt
+    );
+  },
+});
+
+const fileFilterBrand = (
+  _req: Request,
+  file: Express.Multer.File,
+  cb: FileFilterCallback
+): void => {
+  const extname = path.extname(file.originalname).toString();
+  if (!ALLOWED_FILE_TYPES.includes(file.mimetype)) {
+    const error = new Error(`File type not allowed: ${extname}`);
+    cb(error as unknown as null, false);
+  }
+  cb(null, true);
+};
+
 // for user
 const uploadUserImage = multer({
   storage: userStorage,
@@ -77,4 +133,23 @@ const uploadProductImage = multer({
   fileFilter: fileFilterProduct,
 });
 
-export { uploadUserImage, uploadProductImage };
+// for category
+const uploadCategoryImage = multer({
+  storage: categoryStorage,
+  limits: { fileSize: MAX_FILE_SIZE },
+  fileFilter: fileFilterCategory,
+});
+
+// for brand
+const uploadBrandImage = multer({
+  storage: brandStorage,
+  limits: { fileSize: MAX_FILE_SIZE },
+  fileFilter: fileFilterBrand,
+});
+
+export {
+  uploadUserImage,
+  uploadProductImage,
+  uploadCategoryImage,
+  uploadBrandImage,
+};
