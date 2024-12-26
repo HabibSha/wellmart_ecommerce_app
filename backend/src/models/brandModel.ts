@@ -17,10 +17,10 @@ const brandSchema = new mongoose.Schema(
       unique: true,
     },
     products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
-    // image: {
-    //   type: String,
-    //   required: [true, "Brand image is required"],
-    // },
+    image: {
+      type: String,
+      required: [true, "Brand image is required"],
+    },
   },
   { timestamps: true }
 );
