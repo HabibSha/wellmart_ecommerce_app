@@ -189,9 +189,9 @@ const handleDeleteProduct = async (
       throw createError(404, "Product not found!");
     }
 
-    if (product.images && product.images.length > 0) {
+    if (product.image && product.image.length > 0) {
       // Iterate over each image URL in the array and delete it from Cloudinary
-      for (const imageUrl of product.images) {
+      for (const imageUrl of product.image) {
         const publicId = extractPublicId(imageUrl);
         if (publicId) {
           await cloudinary.uploader.destroy(publicId);

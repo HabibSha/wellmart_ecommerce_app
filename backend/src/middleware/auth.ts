@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 import { jwtAccessKey } from "../secret";
 
-const isLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
+const isLoggedIn = async (req: Request, _res: Response, next: NextFunction) => {
   try {
     const accessToken = req.cookies.accessToken;
     if (!accessToken) {
@@ -15,6 +15,9 @@ const isLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
     if (!decoded) {
       throw createError(401, "Invalid access token. Please login");
     }
+
+    console.log("accessToken = ", accessToken);
+    console.log(decoded);
 
     // req.user = decoded.user;
     next();
