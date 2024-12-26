@@ -4,6 +4,8 @@ import createError from "http-errors";
 
 import Category from "../models/categoryModel";
 import { successResponse } from "./responseController";
+import uploadToCloudinary from "../helper/uploadToCloudinary";
+import unlinkImageFromLocal from "../helper/unlinkImageFromLocal";
 
 // Create a category
 const handleCreateCategory = async (
@@ -12,15 +14,36 @@ const handleCreateCategory = async (
   next: NextFunction
 ): Promise<void> => {
   const { title } = req.body;
+
+  let uploadedImageResult = null;
+  let imageUrl = "";
+
   try {
     const existingCategory = await Category.exists({ title });
     if (existingCategory) {
       throw createError(400, "Category already exists");
     }
 
+    // handle upload image
+    const image = req.file;
+    if (!image) {
+      throw createError(400, "Category image is required");
+    }
+
+    if (image.size > 1024 * 1024 * 2) {
+      throw createError(400, "File is too large. It must be less than 2 MB");
+    }
+
+    uploadedImageResult = await uploadToCloudinary(image.path);
+    imageUrl = uploadedImageResult.secure_url;
+
+    // Delete image from local file storage
+    unlinkImageFromLocal(image.path);
+
     const newCategory = {
       title: title,
       slug: slugify(title, { lower: true }),
+      image: imageUrl,
     };
 
     const category = await Category.create(newCategory);
