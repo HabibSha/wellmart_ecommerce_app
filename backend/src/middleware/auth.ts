@@ -56,6 +56,11 @@ const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
     if (!decoded) {
       throw createError(401, "Invalid access token. Please login");
     }
+
+    console.log("accessToken = ", accessToken);
+    console.log(decoded);
+
+    next();
   } catch (error) {
     return next(error);
   }
