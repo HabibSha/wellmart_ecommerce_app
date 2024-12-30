@@ -12,6 +12,7 @@ import userRouter from "./routers/userRouter";
 import productRouter from "./routers/productRouter";
 import categoryRouter from "./routers/categoryRouter";
 import brandRouter from "./routers/brandRouter";
+import reviewRouter from "./routers/reviewRouter";
 
 const app: Application = express();
 
@@ -25,6 +26,7 @@ app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
 app.use("/api/brands", brandRouter);
+app.use("/api/reviews", reviewRouter);
 
 app.get("/", (_req: Request, res: Response, _next: NextFunction) => {
   res.status(200).json({ message: "hello" });
