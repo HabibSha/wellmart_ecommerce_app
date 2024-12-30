@@ -7,6 +7,7 @@ import {
   MAX_FILE_SIZE,
   ALLOWED_FILE_TYPES,
   UPLOAD_PRODUCT_IMG_DIR,
+  UPLOAD_REVIEW_IMG_DIR,
   UPLOAD_CATEGORY_IMG_DIR,
   UPLOAD_BRAND_IMG_DIR,
 } from "../config";
@@ -119,6 +120,33 @@ const fileFilterBrand = (
   cb(null, true);
 };
 
+// review storage
+const reviewStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, UPLOAD_REVIEW_IMG_DIR); // Temporary directory
+  },
+  filename: (req, file, cb) => {
+    const fileExt = path.extname(file.originalname).toLowerCase();
+    cb(
+      null,
+      Date.now() + "-" + file.originalname.replace(fileExt, "") + fileExt
+    );
+  },
+});
+
+const fileFilterReview = (
+  _req: Request,
+  file: Express.Multer.File,
+  cb: FileFilterCallback
+): void => {
+  const extname = path.extname(file.originalname).toString();
+  if (!ALLOWED_FILE_TYPES.includes(file.mimetype)) {
+    const error = new Error(`File type not allowed: ${extname}`);
+    cb(error as unknown as null, false);
+  }
+  cb(null, true);
+};
+
 // for user
 const uploadUserImage = multer({
   storage: userStorage,
@@ -147,9 +175,17 @@ const uploadBrandImage = multer({
   fileFilter: fileFilterBrand,
 });
 
+// for brand
+const uploadReviewImage = multer({
+  storage: reviewStorage,
+  limits: { fileSize: MAX_FILE_SIZE },
+  fileFilter: fileFilterReview,
+});
+
 export {
   uploadUserImage,
   uploadProductImage,
   uploadCategoryImage,
   uploadBrandImage,
+  uploadReviewImage,
 };
