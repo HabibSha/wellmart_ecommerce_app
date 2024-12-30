@@ -64,6 +64,10 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    review: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Review",
+    },
   },
   { timestamps: true }
 );
