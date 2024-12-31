@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from "express";
+import createError from "http-errors";
 
 import Review from "../models/reviewModel";
+import uploadToCloudinary from "../helper/uploadToCloudinary";
+import unlinkImageFromLocal from "../helper/unlinkImageFromLocal";
 import { successResponse } from "./responseController";
 
 const handleCreateReview = async (
@@ -11,7 +14,22 @@ const handleCreateReview = async (
   const { slug } = req.params;
   const { rating, message } = req.body;
 
+  let uploadedImageResult = null;
+  let imageUrl = "";
+
   try {
+    // handle upload image
+    const image = req.file;
+    if (image.size > 1024 * 1024 * 2) {
+      throw createError(400, "File is too large. It must be less than 2 MB");
+    }
+
+    uploadedImageResult = await uploadToCloudinary(image.path);
+    imageUrl = uploadedImageResult.secure_url;
+
+    // Delete image from local file storage
+    unlinkImageFromLocal(image.path);
+
     const newReview = {
       rating,
       message,
