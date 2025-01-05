@@ -8,6 +8,8 @@ interface UserPayload {
   id: string;
   name: string;
   email: string;
+  isAdmin: boolean;
+  isBanned: boolean;
 }
 
 // Extend the Request interface
@@ -23,7 +25,7 @@ const isLoggedIn = async (req: Request, _res: Response, next: NextFunction) => {
   try {
     const accessToken = req.cookies.accessToken;
     if (!accessToken) {
-      throw createError(401, "Access token not found. Please login");
+      throw createError(401, "Unauthorized. User not logged in.");
     }
 
     const decoded = jwt.verify(accessToken, jwtAccessKey) as JwtPayload;
@@ -62,16 +64,9 @@ const isLoggedOut = async (
 
 const isAdmin = async (req: Request, _res: Response, next: NextFunction) => {
   try {
-    const accessToken = req.body.admin;
-    if (!accessToken) {
-      throw createError(401, "Access token not found. Please login");
+    if(!req.user?.isAdmin) {
+      throw createError(403, "Forbidden. You must be an admin to access this resource.");
     }
-
-    const decoded = jwt.verify(accessToken, jwtAccessKey);
-    if (!decoded) {
-      throw createError(401, "Invalid access token. Please login");
-    }
-
     next();
   } catch (error) {
     return next(error);
