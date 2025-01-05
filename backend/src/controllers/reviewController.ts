@@ -19,30 +19,34 @@ const handleCreateReview = async (
 
   try {
     // handle upload image
-    // const image = req.file;
-    // if (image.size > 1024 * 1024 * 2) {
-    //   throw createError(400, "File is too large. It must be less than 2 MB");
-    // }
+    const image = req.file;
+    if (image) {
+      if (image.size > 1024 * 1024 * 2) {
+        throw createError(400, "File is too large. It must be less than 2 MB");
+      }
 
-    // uploadedImageResult = await uploadToCloudinary(image.path);
-    // imageUrl = uploadedImageResult.secure_url;
+      uploadedImageResult = await uploadToCloudinary(image.path);
+      imageUrl = uploadedImageResult.secure_url;
 
-    // // Delete image from local file storage
-    // unlinkImageFromLocal(image.path);
+      // Delete image from local file storage
+      unlinkImageFromLocal(image.path);
+    } else {
+      throw createError(400, "No image file Provided");
+    }
 
-    // const newReview = {
-    //   rating,
-    //   message,
-    //   user: req.userId,
-    //   product: slug,
-    // };
+    const newReview = {
+      rating,
+      message,
+      user: req.userId,
+      product: slug,
+    };
 
-    // const review = await Review.create(newReview);
+    const review = await Review.create(newReview);
 
     successResponse(res, {
       statusCode: 201,
       message: "Review has been successfully created",
-      // payload: review,
+      payload: review,
     });
   } catch (error) {
     next(error);
