@@ -5,7 +5,7 @@ import { JwtPayload } from "jsonwebtoken";
 
 // Define user payload type if needed
 interface UserPayload {
-  id: string;
+  userId: string;
   name: string;
   email: string;
   isAdmin: boolean;

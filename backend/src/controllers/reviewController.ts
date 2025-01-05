@@ -18,7 +18,6 @@ const handleCreateReview = async (
   let imageUrl = "";
 
   try {
-    // handle upload image
     const image = req.file;
     if (image) {
       if (image.size > 1024 * 1024 * 2) {
@@ -37,7 +36,7 @@ const handleCreateReview = async (
     const newReview = {
       rating,
       message,
-      user: req.userId,
+      user: req.user?.userId,
       product: slug,
     };
 
