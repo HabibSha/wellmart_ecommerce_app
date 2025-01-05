@@ -12,6 +12,7 @@ import {
 import { uploadProductImage } from "../middleware/fileUpload";
 import { validateProduct } from "../validation/product";
 import runValidation from "../validation";
+import { isLoggedIn } from "../middleware/auth";
 
 const productRouter = Router();
 
@@ -22,7 +23,7 @@ productRouter.post(
   runValidation,
   handleCreateProduct
 );
-productRouter.get("/", handleGetProducts);
+productRouter.get("/", isLoggedIn, handleGetProducts);
 productRouter.get("/:slug", handleGetProduct);
 productRouter.delete("/:slug", handleDeleteProduct);
 productRouter.put("/:slug", handleUpdateProduct);
