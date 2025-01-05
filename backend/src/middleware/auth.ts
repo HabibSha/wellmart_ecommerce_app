@@ -31,8 +31,8 @@ const isLoggedIn = async (req: Request, _res: Response, next: NextFunction) => {
       throw createError(401, "Invalid access token. Please login");
     }
 
-    console.log("accessToken = ", accessToken);
-    console.log(decoded);
+    // console.log("accessToken = ", accessToken);
+    // console.log(decoded);
 
     req.user = decoded.user;
     next();
@@ -41,26 +41,26 @@ const isLoggedIn = async (req: Request, _res: Response, next: NextFunction) => {
   }
 };
 
-// const isLoggedOut = async (req: Request, res: Response, next: NextFunction) => {
-//   try {
-//     const accessToken = req.cookies.accessToken;
-//     if (!accessToken) {
-//       throw createError(401, "Access token not found. Please login");
-//     }
+const isLoggedOut = async (
+  req: Request,
+  _res: Response,
+  next: NextFunction
+) => {
+  try {
+    const accessToken = req.cookies.accessToken;
+    if (accessToken) {
+      const decoded = jwt.verify(accessToken, jwtAccessKey) as JwtPayload;
+      if (decoded) {
+        throw createError(400, "User is already logged in");
+      }
+    }
+    next();
+  } catch (error) {
+    return next(error);
+  }
+};
 
-//     const decoded = jwt.verify(accessToken, jwtAccessKey);
-//     if (!decoded) {
-//       throw createError(401, "Invalid access token. Please login");
-//     }
-
-//     // req.user = decoded.user;
-//     next();
-//   } catch (error) {
-//     return next(error);
-//   }
-// };
-
-const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
+const isAdmin = async (req: Request, _res: Response, next: NextFunction) => {
   try {
     const accessToken = req.body.admin;
     if (!accessToken) {
@@ -72,13 +72,10 @@ const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
       throw createError(401, "Invalid access token. Please login");
     }
 
-    console.log("accessToken = ", accessToken);
-    console.log(decoded);
-
     next();
   } catch (error) {
     return next(error);
   }
 };
 
-export { isLoggedIn, isAdmin };
+export { isLoggedIn, isLoggedOut, isAdmin };
