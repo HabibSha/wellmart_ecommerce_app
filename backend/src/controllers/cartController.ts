@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import createError from "http-errors";
 
 import Cart from "../models/cartModel";
 import Product from "../models/productModel";
@@ -17,14 +18,17 @@ const handleAddToCart = async (
       user: userId,
       product: productId,
     });
-    const existingProduct = await Product.findOne({ productId });
 
-    let cart;
+    const existingProduct = await Product.findOne({ _id: productId });
+    if (!existingProduct) {
+      throw createError(404, "Product not found");
+    }
 
     if (existingCart) {
       existingCart.quantity++;
-      existingCart.cartTotal += existingProduct.price;
-      existingCart.save();
+      existingCart.cartTotal =
+        (existingCart.cartTotal ?? 0) + existingProduct.price;
+      await existingCart.save();
     } else {
       const newCart = {
         user: userId,
@@ -33,13 +37,13 @@ const handleAddToCart = async (
         cartTotal: existingProduct.price,
       };
 
-      cart = await Cart.create(newCart);
+      await Cart.create(newCart);
     }
 
     successResponse(res, {
       statusCode: 201,
       message: "Product added to the cart successfully",
-      payload: cart,
+      payload: {},
     });
   } catch (error) {
     next(error);
