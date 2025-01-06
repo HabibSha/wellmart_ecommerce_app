@@ -161,6 +161,14 @@ const handleGetProduct = async (
     const product = await Product.findOne({ slug }).populate([
       { path: "category", select: "-__v -products" },
       { path: "brand", select: "-__v -products" },
+      {
+        path: "review",
+        select: "-__v -product",
+        populate: {
+          path: "user",
+          select: "name",
+        },
+      },
     ]);
     if (!product) {
       throw createError(404, "Product not found!");

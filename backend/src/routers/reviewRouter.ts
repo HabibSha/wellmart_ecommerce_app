@@ -9,7 +9,7 @@ import { isLoggedIn } from "../middleware/auth";
 const reviewRouter = Router();
 
 reviewRouter.post(
-  "/",
+  "/:slug",
   isLoggedIn,
   uploadReviewImage.single("image"),
   //   validateBrand,

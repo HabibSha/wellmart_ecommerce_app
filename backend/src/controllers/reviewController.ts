@@ -4,6 +4,7 @@ import createError from "http-errors";
 import Review from "../models/reviewModel";
 import uploadToCloudinary from "../helper/uploadToCloudinary";
 import unlinkImageFromLocal from "../helper/unlinkImageFromLocal";
+import Product from "../models/productModel";
 import { successResponse } from "./responseController";
 
 const handleCreateReview = async (
@@ -29,8 +30,6 @@ const handleCreateReview = async (
 
       // Delete image from local file storage
       unlinkImageFromLocal(image.path);
-    } else {
-      throw createError(400, "No image file Provided");
     }
 
     const newReview = {
@@ -41,6 +40,8 @@ const handleCreateReview = async (
     };
 
     const review = await Review.create(newReview);
+
+    await Product.findOneAndUpdate({ slug }, { $push: { review: review._id } });
 
     successResponse(res, {
       statusCode: 201,
