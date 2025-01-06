@@ -12,7 +12,7 @@ const handleCreateReview = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { slug } = req.params;
+  const { productId } = req.params;
   const { rating, message } = req.body;
 
   let uploadedImageResult = null;
@@ -36,12 +36,15 @@ const handleCreateReview = async (
       rating,
       message,
       user: req.user?.userId,
-      product: slug,
+      product: productId,
     };
 
     const review = await Review.create(newReview);
 
-    await Product.findOneAndUpdate({ slug }, { $push: { review: review._id } });
+    await Product.findOneAndUpdate(
+      { productId },
+      { $push: { review: review._id } }
+    );
 
     successResponse(res, {
       statusCode: 201,
