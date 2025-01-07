@@ -1,6 +1,9 @@
 import { Router } from "express";
 
-import { handleCreateReview } from "../controllers/reviewController";
+import {
+  handleCreateReview,
+  handleGetReview,
+} from "../controllers/reviewController";
 import { uploadReviewImage } from "../middleware/fileUpload";
 import { isLoggedIn } from "../middleware/auth";
 // import validateBrand from "../validation/brand";
@@ -16,5 +19,6 @@ reviewRouter.post(
   //   runValidation,
   handleCreateReview
 );
+reviewRouter.get("/:slug", handleGetReview);
 
 export default reviewRouter;
