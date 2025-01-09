@@ -75,8 +75,22 @@ const handleGetCart = async (
       payload: {},
     });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
-export { handleAddToCart };
+const handleRemoveCart = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { productId } = req.params;
+  const userId = req.user?.userId;
+
+  try {
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export { handleAddToCart, handleGetCart, handleRemoveCart };
