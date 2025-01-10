@@ -50,29 +50,34 @@ const handleAddToCart = async (
   }
 };
 
+// handle get cart
 const handleGetCart = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { productId } = req.params;
   const userId = req.user?.userId;
 
   try {
-    const cart = await Cart.find({ user: userId });
+    const cart = await Cart.find({ user: userId }).populate([
+      { path: "product", select: "title description image price quantity" },
+    ]);
     if (!cart) {
-      throw createError(404, "No products available in your cart.");
+      throw createError(404, "Cart not found!");
     }
 
     const subTotal = cart.reduce((acc, cur) => {
-      acc += cur.cartTotal;
+      acc += cur.cartTotal ?? 0; // Use 0 if cartTotal is null or undefined
       return acc;
     }, 0);
 
     successResponse(res, {
       statusCode: 201,
       message: "Product added to the cart successfully",
-      payload: {},
+      payload: {
+        cart: cart,
+        subTotal: subTotal,
+      },
     });
   } catch (error) {
     return next(error);
