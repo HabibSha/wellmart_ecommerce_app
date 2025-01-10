@@ -119,4 +119,27 @@ const handleRemoveCart = async (
   }
 };
 
-export { handleAddToCart, handleGetCart, handleRemoveCart };
+const handleDeleteCart = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { cartId } = req.params;
+
+  try {
+    const deleteCart = await Cart.findByIdAndDelete(cartId);
+    if (!deleteCart) {
+      throw createError(404, "Cart not found!");
+    }
+
+    successResponse(res, {
+      statusCode: 200,
+      message: "Cart was deleted successfully",
+      payload: {},
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { handleAddToCart, handleGetCart, handleRemoveCart, handleDeleteCart };
