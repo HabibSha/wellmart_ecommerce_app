@@ -67,7 +67,7 @@ const handleGetCart = async (
     }
 
     const subTotal = cart.reduce((acc, cur) => {
-      acc += cur.cartTotal ?? 0; // Use 0 if cartTotal is null or undefined
+      acc += cur.cartTotal ?? 0; // use 0 if cartTotal is null or undefined
       return acc;
     }, 0);
 
@@ -93,8 +93,29 @@ const handleRemoveCart = async (
   const userId = req.user?.userId;
 
   try {
+    const existingCart = await Cart.findOne({
+      user: userId,
+      product: productId,
+    }).populate([{ path: "product" }]);
+    if (!existingCart) {
+      throw createError(404, "Cart not found!");
+    }
+    if (existingCart.quantity > 1) {
+      existingCart.quantity--;
+      existingCart.cartTotal =
+        existingCart.cartTotal ?? 0 - existingCart.product?.price;
+      await existingCart.save();
+    } else {
+      await Cart.findOneAndDelete({ user: userId, product: productId });
+    }
+
+    successResponse(res, {
+      statusCode: 200,
+      message: "Item removed from cart",
+      payload: existingCart,
+    });
   } catch (error) {
-    return next(error);
+    next(error);
   }
 };
 
