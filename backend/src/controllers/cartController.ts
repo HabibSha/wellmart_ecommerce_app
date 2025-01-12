@@ -80,7 +80,7 @@ const handleGetCart = async (
       },
     });
   } catch (error) {
-    return next(error);
+    next(error);
   }
 };
 
