@@ -13,6 +13,6 @@ const cartRouter = Router();
 cartRouter.post("/:productId", isLoggedIn, handleAddToCart);
 cartRouter.get("/", isLoggedIn, handleGetCart);
 cartRouter.put("/", isLoggedIn, handleRemoveCart);
-cartRouter.delete("/:cartId", handleDeleteCart);
+cartRouter.delete("/:cartId", isLoggedIn, handleDeleteCart);
 
 export default cartRouter;
