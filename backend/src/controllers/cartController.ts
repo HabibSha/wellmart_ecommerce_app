@@ -10,7 +10,7 @@ const handleAddToCart = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { productId } = req.params;
+  const productId = req.query.productId;
   const userId = req.user?.userId;
 
   try {
@@ -89,7 +89,7 @@ const handleRemoveCart = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { productId } = req.params;
+  const productId = req.query.productId;
   const userId = req.user?.userId;
 
   try {
@@ -124,7 +124,7 @@ const handleDeleteCart = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { cartId } = req.params;
+  const cartId = req.query.cartId;
 
   try {
     const deleteCart = await Cart.findByIdAndDelete(cartId);
