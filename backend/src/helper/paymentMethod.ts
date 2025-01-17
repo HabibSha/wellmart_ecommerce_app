@@ -2,9 +2,21 @@ import stripe from "stripe";
 
 import stripeSecret from "../secret";
 
-interface IPayment {}
+interface IPayment {
+  number: Number;
+  cvc: Number;
+  expMonth: Number;
+  expYear: Number;
+  amount: Number;
+}
 
-const stripePayment = async (number, cvc, expMonth, expYear, amount) => {
+const stripePayment = async ({
+  number,
+  cvc,
+  expMonth,
+  expYear,
+  amount,
+}: IPayment) => {
   try {
     const paymentMethod = await stripe.paymentMethods.create({
       type: "card",
@@ -22,7 +34,9 @@ const stripePayment = async (number, cvc, expMonth, expYear, amount) => {
       payment_method: paymentMethod,
       confirm: true,
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export default stripePayment;
