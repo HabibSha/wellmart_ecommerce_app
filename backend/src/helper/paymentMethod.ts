@@ -28,7 +28,7 @@ const stripePayment = async ({
       },
     });
 
-    const paymentIntents = await stripe.paymentIntents.create({
+    const paymentIntents = await stripe.create({
       amount: amount * 100,
       currency: "BDT",
       payment_method: paymentMethod,
