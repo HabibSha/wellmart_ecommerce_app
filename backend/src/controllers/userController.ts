@@ -132,9 +132,33 @@ const handleUpdateUser = async (
   }
 };
 
+// delete user
+const handleDeleteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { id } = req.params;
+  try {
+    const user = await User.findByIdAndDelete({ id });
+    if (!user) {
+      throw createError(404, "No user found with this id!");
+    }
+
+    successResponse(res, {
+      statusCode: 200,
+      message: "User was deleted successfully",
+      payload: {},
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   handleUserRegister,
   handleGetAllUsers,
   handleGetSingleUser,
   handleUpdateUser,
+  handleDeleteUser,
 };
