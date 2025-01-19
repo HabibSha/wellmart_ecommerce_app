@@ -5,6 +5,7 @@ import {
   handleGetAllUsers,
   handleGetSingleUser,
   handleUpdateUser,
+  handleDeleteUser,
 } from "../controllers/userController";
 import { handleUserLogin } from "../controllers/authController";
 import { uploadUserImage } from "../middleware/fileUpload";
@@ -27,5 +28,6 @@ userRouter.post("/login", validateUserLogin, runValidation, handleUserLogin);
 userRouter.get("/", handleGetAllUsers);
 userRouter.get("/:id", handleGetSingleUser);
 userRouter.put("/:id", handleUpdateUser);
+userRouter.delete("/:id", handleDeleteUser);
 
 export default userRouter;
