@@ -3,6 +3,8 @@ import { Router } from "express";
 import {
   handleUserRegister,
   handleGetAllUsers,
+  handleGetSingleUser,
+  handleUpdateUser,
 } from "../controllers/userController";
 import { handleUserLogin } from "../controllers/authController";
 import { uploadUserImage } from "../middleware/fileUpload";
@@ -22,6 +24,8 @@ userRouter.post(
   handleUserRegister
 );
 userRouter.post("/login", validateUserLogin, runValidation, handleUserLogin);
-userRouter.post("/users", handleGetAllUsers);
+userRouter.get("/", handleGetAllUsers);
+userRouter.get("/:id", handleGetSingleUser);
+userRouter.put("/:id", handleUpdateUser);
 
 export default userRouter;
