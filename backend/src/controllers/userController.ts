@@ -72,10 +72,13 @@ const handleGetAllUsers = async (
 ): Promise<void> => {
   try {
     const users = await User.find();
+    if (!users) {
+      throw createError(404, "No users found!");
+    }
 
     successResponse(res, {
       statusCode: 200,
-      message: "User returned successfully",
+      message: "User was returned successfully",
       payload: users,
     });
   } catch (error) {
@@ -83,4 +86,27 @@ const handleGetAllUsers = async (
   }
 };
 
-export { handleUserRegister, handleGetAllUsers };
+// Get all users by admin
+const handleGetSingleUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { id } = req.params;
+  try {
+    const user = await User.findOne({ id });
+    if (!user) {
+      throw createError(404, "No user found by this id!");
+    }
+
+    successResponse(res, {
+      statusCode: 200,
+      message: "User was returned successfully",
+      payload: user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { handleUserRegister, handleGetAllUsers, handleGetSingleUser };
