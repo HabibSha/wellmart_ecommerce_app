@@ -86,7 +86,7 @@ const handleGetAllUsers = async (
   }
 };
 
-// Get all users by admin
+// Get single user
 const handleGetSingleUser = async (
   req: Request,
   res: Response,
@@ -96,7 +96,7 @@ const handleGetSingleUser = async (
   try {
     const user = await User.findOne({ id });
     if (!user) {
-      throw createError(404, "No user found by this id!");
+      throw createError(404, "No user found with this id!");
     }
 
     successResponse(res, {
@@ -109,4 +109,32 @@ const handleGetSingleUser = async (
   }
 };
 
-export { handleUserRegister, handleGetAllUsers, handleGetSingleUser };
+// update user
+const handleUpdateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne(email);
+    if (!user) {
+      throw createError(404, "No user found with this email!");
+    }
+
+    successResponse(res, {
+      statusCode: 200,
+      message: "User was updated successfully",
+      payload: user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export {
+  handleUserRegister,
+  handleGetAllUsers,
+  handleGetSingleUser,
+  handleUpdateUser,
+};
