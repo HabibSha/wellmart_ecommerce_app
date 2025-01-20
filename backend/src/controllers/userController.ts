@@ -78,7 +78,7 @@ const handleGetAllUsers = async (
 
     successResponse(res, {
       statusCode: 200,
-      message: "User was returned successfully",
+      message: "Users were returned successfully",
       payload: users,
     });
   } catch (error) {
@@ -92,9 +92,9 @@ const handleGetSingleUser = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const { id } = req.params;
+  const userId = req.params.id;
   try {
-    const user = await User.findOne({ id });
+    const user = await User.findOne({ _id: userId });
     if (!user) {
       throw createError(404, "No user found with this id!");
     }
@@ -115,11 +115,12 @@ const handleUpdateUser = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
+  const userId = req.params.id;
   const { email } = req.body;
   try {
-    const user = await User.findOne(email);
+    const user = await User.findByIdAndUpdate({ _id: userId });
     if (!user) {
-      throw createError(404, "No user found with this email!");
+      throw createError(404, "No user found with this id!");
     }
 
     successResponse(res, {
@@ -138,9 +139,9 @@ const handleDeleteUser = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const { id } = req.params;
+  const userId = req.params.id;
   try {
-    const user = await User.findByIdAndDelete({ id });
+    const user = await User.findByIdAndDelete({ _id: userId });
     if (!user) {
       throw createError(404, "No user found with this id!");
     }
