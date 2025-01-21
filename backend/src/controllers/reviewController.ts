@@ -79,4 +79,27 @@ const handleGetReview = async (
   }
 };
 
-export { handleCreateReview, handleGetReview };
+const handleUpdateReview = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { productId } = req.params;
+
+  try {
+    const existingReview = await Review.findById(productId);
+    if (!existingReview) {
+      throw createError(404, "No review found with this id!");
+    }
+
+    successResponse(res, {
+      statusCode: 201,
+      message: "Review was updated successfully",
+      payload: {},
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { handleCreateReview, handleGetReview, handleUpdateReview };
