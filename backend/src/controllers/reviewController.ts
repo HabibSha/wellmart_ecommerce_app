@@ -102,4 +102,32 @@ const handleUpdateReview = async (
   }
 };
 
-export { handleCreateReview, handleGetReview, handleUpdateReview };
+const handleDeleteReview = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { productId } = req.params;
+
+  try {
+    const existingReview = await Review.findByIdAndDelete(productId);
+    if (!existingReview) {
+      throw createError(404, "No review found with this id!");
+    }
+
+    successResponse(res, {
+      statusCode: 201,
+      message: "Review was deleted successfully",
+      payload: {},
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export {
+  handleCreateReview,
+  handleGetReview,
+  handleUpdateReview,
+  handleDeleteReview,
+};
