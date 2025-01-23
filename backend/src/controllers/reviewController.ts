@@ -87,6 +87,11 @@ const handleUpdateReview = async (
   const { productId } = req.params;
 
   try {
+    const updateOptions = { new: true, runValidators: true, context: "query" };
+    let updates: { [key: string]: any } = {};
+
+    const allowedFields = ["rating", "message"];
+
     const existingReview = await Review.findById(productId);
     if (!existingReview) {
       throw createError(404, "No review found with this id!");
