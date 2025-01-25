@@ -84,7 +84,7 @@ const handleUpdateReview = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { productId } = req.params;
+  const { reviewId } = req.params;
 
   try {
     const updateOptions = { new: true, runValidators: true, context: "query" };
@@ -98,15 +98,24 @@ const handleUpdateReview = async (
       }
     }
 
-    const existingReview = await Review.findById(productId);
+    const existingReview = await Review.findOne({ reviewId });
     if (!existingReview) {
       throw createError(404, "No review found with this id!");
+    }
+
+    const updatedReview = await Review.findOneAndUpdate(
+      { reviewId },
+      { $set: updates },
+      updateOptions
+    );
+    if (!updatedReview) {
+      throw createError(400, "Review was not updated successfully");
     }
 
     successResponse(res, {
       statusCode: 201,
       message: "Review was updated successfully",
-      payload: {},
+      payload: updatedReview,
     });
   } catch (error) {
     next(error);
