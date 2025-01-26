@@ -84,7 +84,7 @@ const handleUpdateReview = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { reviewId } = req.params;
+  const reviewId = req.query.reviewId;
 
   try {
     const updateOptions = { new: true, runValidators: true, context: "query" };
@@ -127,10 +127,10 @@ const handleDeleteReview = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { productId } = req.params;
+  const reviewId = req.query.reviewId;
 
   try {
-    const existingReview = await Review.findByIdAndDelete(productId);
+    const existingReview = await Review.findByIdAndDelete(reviewId);
     if (!existingReview) {
       throw createError(404, "No review found with this id!");
     }
