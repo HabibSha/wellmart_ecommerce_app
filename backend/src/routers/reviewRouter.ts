@@ -3,6 +3,7 @@ import { Router } from "express";
 import {
   handleCreateReview,
   handleGetReview,
+  handleUpdateReview,
 } from "../controllers/reviewController";
 import { uploadReviewImage } from "../middleware/fileUpload";
 import { isLoggedIn } from "../middleware/auth";
@@ -12,13 +13,14 @@ import { isLoggedIn } from "../middleware/auth";
 const reviewRouter = Router();
 
 reviewRouter.post(
-  "/:slug",
+  "/",
   isLoggedIn,
   uploadReviewImage.single("image"),
   //   validateBrand,
   //   runValidation,
   handleCreateReview
 );
-reviewRouter.get("/:slug", handleGetReview);
+reviewRouter.get("/", handleGetReview);
+reviewRouter.put("/", handleUpdateReview);
 
 export default reviewRouter;
