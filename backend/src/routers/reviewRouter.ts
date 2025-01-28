@@ -4,6 +4,7 @@ import {
   handleCreateReview,
   handleGetReview,
   handleUpdateReview,
+  handleDeleteReview,
 } from "../controllers/reviewController";
 import { uploadReviewImage } from "../middleware/fileUpload";
 import { isLoggedIn } from "../middleware/auth";
@@ -22,5 +23,6 @@ reviewRouter.post(
 );
 reviewRouter.get("/", handleGetReview);
 reviewRouter.put("/", handleUpdateReview);
+reviewRouter.delete("/", handleDeleteReview);
 
 export default reviewRouter;
