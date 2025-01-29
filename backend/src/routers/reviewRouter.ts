@@ -22,7 +22,7 @@ reviewRouter.post(
   handleCreateReview
 );
 reviewRouter.get("/", handleGetReview);
-reviewRouter.put("/", handleUpdateReview);
-reviewRouter.delete("/", handleDeleteReview);
+reviewRouter.put("/", isLoggedIn, handleUpdateReview);
+reviewRouter.delete("/", isLoggedIn, handleDeleteReview);
 
 export default reviewRouter;
