@@ -10,7 +10,7 @@ import {
 import { uploadCategoryImage } from "../middleware/fileUpload";
 import validateCategory from "../validation/category";
 import runValidation from "../validation";
-import { isLoggedIn } from "../middleware/auth";
+import { isLoggedIn, isAdmin } from "../middleware/auth";
 
 const categoryRouter = Router();
 
@@ -23,7 +23,7 @@ categoryRouter.post(
 );
 categoryRouter.get("/", isLoggedIn, handleGetCategories);
 categoryRouter.get("/:slug", isLoggedIn, handleGetCategory);
-categoryRouter.delete("/:slug", isLoggedIn, handleDeleteCategory);
-categoryRouter.put("/:slug", isLoggedIn, handleUpdateCategory);
+categoryRouter.delete("/:slug", isLoggedIn, isAdmin, handleDeleteCategory);
+categoryRouter.put("/:slug", isLoggedIn, isAdmin, handleUpdateCategory);
 
 export default categoryRouter;
