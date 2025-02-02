@@ -21,7 +21,7 @@ categoryRouter.post(
   runValidation,
   handleCreateCategory
 );
-categoryRouter.get("/", isLoggedIn, handleGetCategories);
+categoryRouter.get("/", isLoggedIn, isAdmin, handleGetCategories);
 categoryRouter.get("/:slug", isLoggedIn, handleGetCategory);
 categoryRouter.delete("/:slug", isLoggedIn, isAdmin, handleDeleteCategory);
 categoryRouter.put("/:slug", isLoggedIn, isAdmin, handleUpdateCategory);

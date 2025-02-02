@@ -10,6 +10,7 @@ import {
 import { uploadCategoryImage } from "../middleware/fileUpload";
 import validateBrand from "../validation/brand";
 import runValidation from "../validation";
+import { isLoggedIn, isAdmin } from "../middleware/auth";
 
 const brandRouter = Router();
 
