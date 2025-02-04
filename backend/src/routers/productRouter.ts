@@ -12,7 +12,7 @@ import {
 import { uploadProductImage } from "../middleware/fileUpload";
 import { validateProduct } from "../validation/product";
 import runValidation from "../validation";
-import { isLoggedIn } from "../middleware/auth";
+import { isLoggedIn, isAdmin } from "../middleware/auth";
 
 const productRouter = Router();
 
@@ -23,9 +23,9 @@ productRouter.post(
   runValidation,
   handleCreateProduct
 );
-productRouter.get("/", isLoggedIn, handleGetProducts);
+productRouter.get("/", handleGetProducts);
 productRouter.get("/:slug", handleGetProduct);
-productRouter.delete("/:slug", handleDeleteProduct);
+productRouter.delete("/:slug", isLoggedIn, isAdmin, handleDeleteProduct);
 productRouter.put("/:slug", handleUpdateProduct);
 
 // get products by category & brand router
