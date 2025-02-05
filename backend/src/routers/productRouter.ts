@@ -26,7 +26,7 @@ productRouter.post(
 productRouter.get("/", handleGetProducts);
 productRouter.get("/:slug", handleGetProduct);
 productRouter.delete("/:slug", isLoggedIn, isAdmin, handleDeleteProduct);
-productRouter.put("/:slug", handleUpdateProduct);
+productRouter.put("/:slug", isLoggedIn, isAdmin, handleUpdateProduct);
 
 // get products by category & brand router
 productRouter.get("/get/category", handleGetProductsByCategory);
