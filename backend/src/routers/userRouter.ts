@@ -14,6 +14,7 @@ import {
   validateUserLogin,
 } from "../validation/auth";
 import runValidation from "../validation";
+import { isLoggedIn, isAdmin } from "../middleware/auth";
 
 const userRouter = Router();
 
@@ -27,7 +28,7 @@ userRouter.post(
 userRouter.post("/login", validateUserLogin, runValidation, handleUserLogin);
 userRouter.get("/", handleGetAllUsers);
 userRouter.get("/:id", handleGetSingleUser);
-userRouter.put("/:id", handleUpdateUser);
+userRouter.put("/:id", isLoggedIn, handleUpdateUser);
 userRouter.delete("/:id", handleDeleteUser);
 
 export default userRouter;
