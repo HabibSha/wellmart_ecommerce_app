@@ -29,6 +29,6 @@ userRouter.post("/login", validateUserLogin, runValidation, handleUserLogin);
 userRouter.get("/", handleGetAllUsers);
 userRouter.get("/:id", handleGetSingleUser);
 userRouter.put("/:id", isLoggedIn, handleUpdateUser);
-userRouter.delete("/:id", handleDeleteUser);
+userRouter.delete("/:id", isLoggedIn, isAdmin, handleDeleteUser);
 
 export default userRouter;
